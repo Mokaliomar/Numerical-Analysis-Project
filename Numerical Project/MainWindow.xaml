@@ -1,0 +1,144 @@
+﻿<Window x:Class="Numerical_Project.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Numerical_Project"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="928">
+
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <!-- For the Project Header -->
+            <RowDefinition Height="Auto"/>
+
+            <!-- For the TabControl Tag -->
+            <RowDefinition Height="auto"/>
+
+            <!-- For the DataGrid to show the table -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Numerical Analysis Solver" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+
+        <TabControl Grid.Row="1" Margin="0,0,0,15">
+            <!-- Bisection Method -->
+            <TabItem Header="Bisection Method">
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <Label Content="Equation"/>
+                    <TextBox x:Name="txtBi_Equation" Width="180" Margin="5,0,15,0"/>
+                    <Label Content="Xl (Lower):"/>
+                    <TextBox x:Name="txtBisectXl" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Xu (Upper):"/>
+                    <TextBox x:Name="txtBisectXu" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Ea (%):"/>
+                    <TextBox x:Name="txtBisectEa" Width="60" Margin="5,0,15,0"/>
+
+                    <Button Content="Calculate Bisection" Padding="10,5" Click="Bisection_Click"/>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- False Position Method -->
+            <TabItem Header="False Position Method">
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <Label Content="Equation"/>
+                    <TextBox x:Name="txtFalse_Equation" Width="180" Margin="5,0,15,0"/>
+                    <Label Content="Xl (Lower):"/>
+                    <TextBox x:Name="txtFPXl" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Xu (Upper):"/>
+                    <TextBox x:Name="txtFPXu" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Ea (%):"/>
+                    <TextBox x:Name="txtFPEa" Width="60" Margin="5,0,15,0"/>
+
+                    <Button Content="Calculate False Position" Padding="10,5" Click="FalsePosition_Click"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Fixed Point Method -->
+            <TabItem Header="Fixed-Point Iteration">
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <Label Content="Equation"/>
+                    <TextBox x:Name="txtFixed_Equation" Width="180" Margin="5,0,15,0"/>
+
+                    <Label Content="g(X)"/>
+                    <TextBox x:Name="txtG_x" Width="180" Margin="5,0,15,0"/>
+                    
+                    <Label Content="X0:"/>
+                    <TextBox x:Name="txtFixedX0" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Ea (%):"/>
+                    <TextBox x:Name="txtFixedEa" Width="60" Margin="5,0,15,0"/>
+
+                    <Button Content="Calculate Fixed-Point" Click="FixedPoint_Click" Padding="10,5"/>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Newton Raphson Method -->
+            <TabItem Header="Newton Raphson Method">
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <Label Content="Equation"/>
+                    <TextBox x:Name="txtNewtonEquation" Width="180" Margin="5,0,15,0"/>
+                    <Label Content="X0:"/>
+                    <TextBox x:Name="txtNewtonX0" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Ea (%):"/>
+                    <TextBox x:Name="txtNewtonEa" Width="60" Margin="5,0,15,0"/>
+
+                    <Button Content="Calculate Newton Raphson" Padding="10,5" Click="Newton_Click"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Secant Method -->
+            <TabItem Header="Secant Method">
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <Label Content="Equation"/>
+                    <TextBox x:Name="txtSecant_Equation" Width="180" Margin="5,0,15,0"/>
+                    <Label Content="X-1:"/>
+                    <TextBox x:Name="txtSecantX_1" Width="60" Margin="5,0,15,0"/>
+                    <Label Content="X0:"/>
+                    <TextBox x:Name="txtSecantX0" Width="60" Margin="5,0,15,0"/>
+
+                    <Label Content="Ea (%):"/>
+                    <TextBox x:Name="txtSecantEa" Width="60" Margin="5,0,15,0"/>
+
+                    <Button Content="Calculate Secant Method" Padding="10,5" Click="Secant_Click"/>
+                </StackPanel>
+            </TabItem>
+
+        </TabControl>
+    
+        <DataGrid Grid.Row="2" x:Name="dgResults" Background="White" AutoGenerateColumns="True" ColumnWidth="*"/>
+    </Grid>
+
+    <!--
+    <Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition></RowDefinition>
+        <RowDefinition></RowDefinition>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition></ColumnDefinition>
+        <ColumnDefinition></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <Label Content="Enter F(X) :" FontSize="22" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+    <TextBox Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Left"  Width="200" Height="50" Text=""/>
+
+    <Label Content="Root Method :" FontSize="22" FontWeight="Bold" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+    <Menu Grid.Row="1" Grid.Column="1" Width="200" Height="50" VerticalAlignment="Top" HorizontalAlignment="left">
+        <MenuItem Header="Select a Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click">
+            <MenuItem Header="Bisection Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
+            <MenuItem Header="False Position Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
+            <MenuItem Header="Simple Fixed Point Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
+            <MenuItem Header="Newton Raphson Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
+            <MenuItem Header="Secant Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
+        </MenuItem>
+    </Menu>
+</Grid>
+    -->
+</Window>
