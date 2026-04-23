@@ -14,16 +14,16 @@
             <RowDefinition Height="Auto"/>
 
             <!-- For the TabControl Tag -->
-            <RowDefinition Height="auto"/>
+            <RowDefinition x:Name="TabRow"  Height="Auto"/>
 
             <!-- For the DataGrid to show the table -->
-            <RowDefinition Height="*"/>
+            <RowDefinition x:Name="GridRow" Height="*"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Numerical Analysis Solver" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
 
 
-        <TabControl Grid.Row="1" Margin="0,0,0,15">
+        <TabControl Grid.Row="1" Margin="0,0,0,15" x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged" HorizontalAlignment="Stretch">
             <!-- Bisection Method -->
             <TabItem Header="Bisection Method">
                 <StackPanel Orientation="Horizontal" Margin="10">
@@ -109,6 +109,50 @@
 
                     <Button Content="Calculate Secant Method" Padding="10,5" Click="Secant_Click"/>
                 </StackPanel>
+            </TabItem>
+
+            <!-- Gauss Elimination -->
+            
+            <!-- LU Decomposition -->
+            
+            <!-- Crammer's Rule -->
+            <TabItem x:Name="tabCramer" Header="Cramer's Rule">
+                <Grid Margin="10" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="X3" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="3" Content="Constants" FontWeight="Bold" HorizontalAlignment="Center" Foreground="Blue"/>
+
+                    <TextBox x:Name="a11" Grid.Row="1" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="a12" Grid.Row="1" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="a13" Grid.Row="1" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="b1" Grid.Row="1" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+
+                    <TextBox x:Name="a21" Grid.Row="2" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="a22" Grid.Row="2" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="a23" Grid.Row="2" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="b2" Grid.Row="2" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+
+                    <TextBox x:Name="a31" Grid.Row="3" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="a32" Grid.Row="3" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="a33" Grid.Row="3" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="b3" Grid.Row="3" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+                    <Button Grid.Row="4" Height="30" Grid.ColumnSpan="4" Content="Calculate Crammer" FontSize="17" FontWeight="Bold" Click="Crammer_Click"/>
+                </Grid>
             </TabItem>
 
         </TabControl>

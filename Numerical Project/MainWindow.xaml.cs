@@ -1,6 +1,7 @@
 ﻿using org.mariuszgromada.math.mxparser;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using System.Security.AccessControl;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,6 +38,8 @@ namespace Numerical_Project
             // Tell the DataGrid to look at this list for its data
             //dgResults.ItemsSource = iterationResults;
         }
+
+        #region Helper Methods
         // Substituation of X
         public double EvaluateMath(string equation, double xValue)
         {
@@ -52,7 +55,7 @@ namespace Numerical_Project
             }
             return exp.calculate();
         }
-
+        // Derivative of X
         private double EvaluateDerivative(string equation, double xValue)
         {
             string cleanEquation = equation.ToLower();
@@ -67,6 +70,64 @@ namespace Numerical_Project
             }
             return exp.calculate();
         }
+        // Determinant Evaluation !
+        private double EvaluateDeterminant(double[,] m)
+        {
+            // فك المحدد الثلاثي في سطر برمجي واحد متقسم على 3 أسطر عشان سهولة القراءة
+            return m[0, 0] * (m[1, 1] * m[2, 2] - m[1, 2] * m[2, 1])
+                 - m[0, 1] * (m[1, 0] * m[2, 2] - m[1, 2] * m[2, 0])
+                 + m[0, 2] * (m[1, 0] * m[2, 1] - m[1, 1] * m[2, 0]);
+        }
+        private double GetModifiedDeterminant(double[,] originalA, double[] B, int replaceCol)
+        {
+            // 1. نعمل مصفوفة جديدة فاضية
+            double[,] tempA = new double[3, 3];
+
+            // 2. ننسخ كل الأرقام من A الأصلية لـ tempA عشان نحمي الأصلية
+            Array.Copy(originalA, tempA, originalA.Length);
+
+            // 3. نبدل العمود المطلوب بعمود النواتج B
+            for (int i = 0; i < 3; i++)
+            {
+                tempA[i, replaceCol] = B[i];
+            }
+
+            // 4. نحسب المحدد للمصفوفة الجديدة بعد التعديل ونرجعه
+            return EvaluateDeterminant(tempA);
+        }
+        #endregion
+
+        #region Control the Tab appearance 
+        private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // السطر ده عشان نتأكد إن الواجهة حملت كلها ومفيش حاجة بـ null وتعمل Crash
+            if (dgResults == null || tabCramer == null) return;
+
+            // بنسأل: هل التاب بتاعة Cramer هي اللي مفتوحة دلوقتي؟
+            if (tabCramer.IsSelected)
+            {
+                // لو اه، اخفي الـ DataGrid تماماً (Collapsed بتخفيها وتلغي المساحة الفاضية بتاعتها)
+                dgResults.Visibility = Visibility.Collapsed;
+
+                // 2. قول للدور التاني (التابات): "إنت بقيت النجم (*)"، افرد نفسك وخد كل الشاشة اللي فاضية
+                TabRow.Height = new GridLength(1, GridUnitType.Star);
+
+                // 3. قول للدور التالت (الجدول): "إنت خلاص مبقاش ليك لازمة (Auto)"، صغر نفسك ومتاخدش مساحة
+                GridRow.Height = GridLength.Auto;
+            }
+            else
+            {
+                // لو أي تاب تانية، رجع الـ DataGrid تظهر تاني
+                dgResults.Visibility = Visibility.Visible;
+
+                // 2. قول للدور التاني (التابات): "إنت بقيت النجم (*)"، افرد نفسك وخد كل الشاشة اللي فاضية
+                TabRow.Height = GridLength.Auto;
+
+                // 3. قول للدور التالت (الجدول): "إنت خلاص مبقاش ليك لازمة (Auto)"، صغر نفسك ومتاخدش مساحة
+                GridRow.Height = new GridLength(1, GridUnitType.Star);
+            }
+        }
+        #endregion
 
         #region Bisection Method
         private void Bisection_Click(object sender, RoutedEventArgs e)
@@ -392,50 +453,113 @@ namespace Numerical_Project
                 xi = xi_plus_1;
                 counter++;
             }
+
+        }
         #endregion
 
-        }
-        // For Bisection and False Position (they use the same variables!)
-        public class BracketRow
-        {
-            public int Iteration { get; set; }
-            public double Xl { get; set; }
-            public double F_Xl { get; set; }
-            public double Xu { get; set; }
-            public double F_Xu { get; set; }
-            public double Xr { get; set; }
-            public double F_Xr { get; set; } // Shows the function value at the root
-            public double ErrorPercent { get; set; }
-        }
-        public class FixedPointRow
-        {
-            public int Iteration { get; set; }
-            public double Xi { get; set; }
-            public double Xi_1 { get; set; }
-            public double ErrorPercent { get; set; }
-        }
 
-        // For Newton-Raphson
-        public class NewtonRow
+        #region Crammer's Rule
+        private void Crammer_Click(object sender, RoutedEventArgs e)
         {
-            public int Iteration { get; set; }
-            public double Xi { get; set; }
-            public double Xi_plus_1 { get; set; }
-            public double F_Xi { get; set; }
-            public double F_Prime_Xi { get; set; }
-            public double ErrorPercent { get; set; }
-        }
+            // 1. تعريف مصفوفة المعاملات (3 صفوف و 3 أعمدة)
+            double[,] A = new double[3, 3];
 
-        // For Secant
-        public class SecantRow
-        {
-            public int Iteration { get; set; }
-            public double Xi_minus_1 { get; set; }
-            public double F_Xi_minus_1 { get; set; }
-            public double Xi { get; set; }
-            public double F_Xi { get; set; }
-            //public double Xi_plus_1 { get; set; }
-            public double ErrorPercent { get; set; }
+            // 2. تعريف مصفوفة النواتج (3 أماكن)
+            double[] B = new double[3];
+
+            // بنستخدم Try و Catch عشان لو اليوزر دخل حروف بدل أرقام نطلعله رسالة بدل ما البرنامج يكراش
+            try
+            {
+                // --- سحب بيانات الصف الأول ---
+                A[0, 0] = Convert.ToDouble(a11.Text);
+                A[0, 1] = Convert.ToDouble(a12.Text);
+                A[0, 2] = Convert.ToDouble(a13.Text);
+                B[0] = Convert.ToDouble(b1.Text);
+
+                // --- سحب بيانات الصف الثاني ---
+                A[1, 0] = Convert.ToDouble(a21.Text);
+                A[1, 1] = Convert.ToDouble(a22.Text);
+                A[1, 2] = Convert.ToDouble(a23.Text);
+                B[1] = Convert.ToDouble(b2.Text);
+
+                // --- سحب بيانات الصف الثالث ---
+                A[2, 0] = Convert.ToDouble(a31.Text);
+                A[2, 1] = Convert.ToDouble(a32.Text);
+                A[2, 2] = Convert.ToDouble(a33.Text);
+                B[2] = Convert.ToDouble(b3.Text);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
+            }
+
+            double D = EvaluateDeterminant(A);
+
+            if (D == 0)
+            {
+                MessageBox.Show("The main determinant (D) is 0. This system has no unique solution.");
+                return; // بنوقف الكود عشان مانعملش قسمة على صفر
+            }
+
+            // عشان نجيب المحددات الفرعية في سطر واحد لكل واحدة!
+            // لاحظ إن الـ Index بيبدأ من 0 (يعني العمود الأول 0، التاني 1، التالت 2)
+            double D1 = GetModifiedDeterminant(A, B, 0);
+            double D2 = GetModifiedDeterminant(A, B, 1);
+            double D3 = GetModifiedDeterminant(A, B, 2);
+
+            // حساب النواتج النهائية
+            double X1 = Math.Round(D1 / D, 5);
+            double X2 = Math.Round(D2 / D, 5);
+            double X3 = Math.Round(D3 / D, 5);
+
+            // ممكن هنا تعرضهم في MessageBox أو Label في الواجهة زي ما تحب
+            MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
         }
+        #endregion
     }
+
+    // For Bisection and False Position (they use the same variables!)
+    public class BracketRow
+    {
+        public int Iteration { get; set; }
+        public double Xl { get; set; }
+        public double F_Xl { get; set; }
+        public double Xu { get; set; }
+        public double F_Xu { get; set; }
+        public double Xr { get; set; }
+        public double F_Xr { get; set; } // Shows the function value at the root
+        public double ErrorPercent { get; set; }
+    }
+    public class FixedPointRow
+    {
+        public int Iteration { get; set; }
+        public double Xi { get; set; }
+        public double Xi_1 { get; set; }
+        public double ErrorPercent { get; set; }
+    }
+
+    // For Newton-Raphson
+    public class NewtonRow
+    {
+        public int Iteration { get; set; }
+        public double Xi { get; set; }
+        public double Xi_plus_1 { get; set; }
+        public double F_Xi { get; set; }
+        public double F_Prime_Xi { get; set; }
+        public double ErrorPercent { get; set; }
+    }
+
+    // For Secant
+    public class SecantRow
+    {
+        public int Iteration { get; set; }
+        public double Xi_minus_1 { get; set; }
+        public double F_Xi_minus_1 { get; set; }
+        public double Xi { get; set; }
+        public double F_Xi { get; set; }
+        //public double Xi_plus_1 { get; set; }
+        public double ErrorPercent { get; set; }
+    }
+
 }
