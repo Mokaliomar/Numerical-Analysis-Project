@@ -112,7 +112,45 @@
             </TabItem>
 
             <!-- Gauss Elimination -->
-            
+            <TabItem x:Name="tabGauss" Header="Gauss Elimination">
+                <Grid Margin="10" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="X3" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="3" Content="Constants" FontWeight="Bold" HorizontalAlignment="Center" Foreground="Blue"/>
+
+                    <TextBox x:Name="ga11" Grid.Row="1" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="ga12" Grid.Row="1" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="ga13" Grid.Row="1" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="gb1" Grid.Row="1" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+
+                    <TextBox x:Name="ga21" Grid.Row="2" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="ga22" Grid.Row="2" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="ga23" Grid.Row="2" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="gb2" Grid.Row="2" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+
+                    <TextBox x:Name="ga31" Grid.Row="3" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="ga32" Grid.Row="3" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="ga33" Grid.Row="3" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="gb3" Grid.Row="3" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+                    <Button Grid.Row="4" Height="30" Grid.ColumnSpan="4" Content="Calculate Gauss Elimination" FontSize="17" FontWeight="Bold" Click="Gauss_Click"/>
+                </Grid>
+            </TabItem>
+
             <!-- LU Decomposition -->
             
             <!-- Crammer's Rule -->

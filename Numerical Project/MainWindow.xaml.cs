@@ -101,10 +101,10 @@ namespace Numerical_Project
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // السطر ده عشان نتأكد إن الواجهة حملت كلها ومفيش حاجة بـ null وتعمل Crash
-            if (dgResults == null || tabCramer == null) return;
+            if (dgResults == null || tabCramer == null || tabGauss == null) return;
 
             // بنسأل: هل التاب بتاعة Cramer هي اللي مفتوحة دلوقتي؟
-            if (tabCramer.IsSelected)
+            if (tabCramer.IsSelected || tabGauss.IsSelected)
             {
                 // لو اه، اخفي الـ DataGrid تماماً (Collapsed بتخفيها وتلغي المساحة الفاضية بتاعتها)
                 dgResults.Visibility = Visibility.Collapsed;
@@ -457,6 +457,84 @@ namespace Numerical_Project
         }
         #endregion
 
+        #region Gauss Elimination
+        private void Gauss_Click(object sender, RoutedEventArgs e)
+        {
+            double[,] A = new double[3,4];
+            // بنستخدم Try و Catch عشان لو اليوزر دخل حروف بدل أرقام نطلعله رسالة بدل ما البرنامج يكراش
+            try
+            {
+                // --- سحب بيانات الصف الأول ---
+                A[0, 0] = Convert.ToDouble(ga11.Text);
+                A[0, 1] = Convert.ToDouble(ga12.Text);
+                A[0, 2] = Convert.ToDouble(ga13.Text);
+                A[0, 3] = Convert.ToDouble(gb1.Text);
+
+                // --- سحب بيانات الصف الثاني ---
+                A[1, 0] = Convert.ToDouble(ga21.Text);
+                A[1, 1] = Convert.ToDouble(ga22.Text);
+                A[1, 2] = Convert.ToDouble(ga23.Text);
+                A[1, 3] = Convert.ToDouble(gb2.Text);
+
+                // --- سحب بيانات الصف الثالث ---
+                A[2, 0] = Convert.ToDouble(ga31.Text);
+                A[2, 1] = Convert.ToDouble(ga32.Text);
+                A[2, 2] = Convert.ToDouble(ga33.Text);
+                A[2, 3] = Convert.ToDouble(gb3.Text);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
+            }
+
+            // --- حماية من القسمة على صفر للـ Pivot الأول ---
+            if (A[0, 0] == 0)
+            {
+                MessageBox.Show("A[0,0] is zero! Cannot proceed without Partial Pivoting. Please rearrange your equations.");
+                return;
+            }
+
+            // Forward Elimination (Step 2)
+            double m21 = A[1, 0] / A[0, 0];
+            for(int i = 0; i < 4; i++)
+            {
+                A[1, i] -= m21 * A[0, i];
+            }
+
+            double m31 = A[2, 0] / A[0, 0];
+            for (int i = 0; i < 4; i++)
+            {
+                A[2, i] -= m31 * A[0, i];
+            }
+
+            // --- حماية من القسمة على صفر للـ Pivot التاني ---
+            if (A[1, 1] == 0)
+            {
+                MessageBox.Show("A[1,1] became zero! Cannot proceed.");
+                return;
+            }
+
+            double m32 = A[2, 1] / A[1, 1];
+            for (int i = 0; i < 4; i++)
+            {
+                A[2, i] -= m32 * A[1, i];
+            }
+
+            // Backward Substitution (Calculate the X values)
+            double X3 = Math.Round(A[2, 3] / A[2, 2], 5);
+
+            double X2 = Math.Round((A[1, 3] - A[1, 2] * X3) / A[1, 1], 5);
+
+            double X1 = Math.Round((A[0, 3] - A[0, 2] * X3 - A[0, 1] * X2) / A[0, 0], 5);
+
+            MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+        }
+        #endregion
+
+        #region LU Decompositioin
+
+        #endregion
 
         #region Crammer's Rule
         private void Crammer_Click(object sender, RoutedEventArgs e)
@@ -517,6 +595,7 @@ namespace Numerical_Project
             MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
         }
         #endregion
+
     }
 
     // For Bisection and False Position (they use the same variables!)

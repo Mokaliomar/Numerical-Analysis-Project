@@ -29,9 +29,9 @@ Equation = -0.9x^2 + 1.7x + 2.5
 X0 = 5
 Ea = 0.7
 
-Equation = e^x - sin(x)
-X0 = 0.6
-5 iterations (Ea = ???)
+Equation = e^(-x) - sin(x)
+X0 = 0.5
+Ea = 0.01
 
 =============
 Secant Method
@@ -40,6 +40,15 @@ Equation = 0.95x^3 - 5.9x^2 + 10.9x - 6
 X-1 = 2.5
 X0 = 3.5
 Ea = 0.5
+
+
+=================
+Gauss Elimination
+=================
+The Array =
+[ 2 -6 -1  |  -38  ]
+[ -3 -1 7  |  -34  ]
+[ -8 1 -2  |  -20  ]
 
 ==============
 Crammer's Rule
