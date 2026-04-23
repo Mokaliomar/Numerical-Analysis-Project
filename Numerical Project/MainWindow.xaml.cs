@@ -101,10 +101,10 @@ namespace Numerical_Project
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // السطر ده عشان نتأكد إن الواجهة حملت كلها ومفيش حاجة بـ null وتعمل Crash
-            if (dgResults == null || tabCramer == null || tabGauss == null) return;
+            if (dgResults == null || tabCramer == null || tabGauss == null || tabLU == null) return;
 
             // بنسأل: هل التاب بتاعة Cramer هي اللي مفتوحة دلوقتي؟
-            if (tabCramer.IsSelected || tabGauss.IsSelected)
+            if (tabCramer.IsSelected || tabGauss.IsSelected || tabLU.IsSelected)
             {
                 // لو اه، اخفي الـ DataGrid تماماً (Collapsed بتخفيها وتلغي المساحة الفاضية بتاعتها)
                 dgResults.Visibility = Visibility.Collapsed;
@@ -532,8 +532,94 @@ namespace Numerical_Project
         }
         #endregion
 
-        #region LU Decompositioin
+        #region LU Decomposition
+        // Helper Method, علشان افصل المصفوفه A وتبقي بعد كده سهله في التعويض بعدها
+        private void GetLUDecomposition(double[,] A, out double[,] L, out double[,] U)
+        {
+            // 1. تعريف مصفوفة L (ونحط على القطر الرئيسي وحايد)
+            L = new double[3, 3];
+            for (int i = 0; i < 3; i++)
+                L[i, i] = 1.0;
 
+            // 2. تعريف مصفوفة U (في البداية بتكون نسخة من A)
+            U = new double[3, 3];
+            Array.Copy(A, U, A.Length);
+
+            // 3. تطبيق الـ Forward Elimination على U، وتخزين الـ m في L
+
+            // --- Step 1 ---
+            if (U[0, 0] == 0) throw new DivideByZeroException("Pivot U[0,0] is zero.");
+
+            double m21 = U[1, 0] / U[0, 0];
+            L[1, 0] = m21; // بنخزن الـ Multiplier في L
+            for (int i = 0; i < 3; i++) U[1, i] -= m21 * U[0, i]; // بنحدث U
+
+            double m31 = U[2, 0] / U[0, 0];
+            L[2, 0] = m31;
+            for (int i = 0; i < 3; i++) U[2, i] -= m31 * U[0, i];
+
+            // --- Step 2 ---
+            if (U[1, 1] == 0) throw new DivideByZeroException("Pivot U[1,1] is zero.");
+
+            double m32 = U[2, 1] / U[1, 1];
+            L[2, 1] = m32;
+            for (int i = 0; i < 3; i++) U[2, i] -= m32 * U[1, i];
+        }
+        private void LU_Click(object sender, RoutedEventArgs e)
+        {
+            double[,] A = new double[3, 3];
+            double[] B = new double[3];
+            // بنستخدم Try و Catch عشان لو اليوزر دخل حروف بدل أرقام نطلعله رسالة بدل ما البرنامج يكراش
+            try
+            {
+                // --- سحب بيانات الصف الأول ---
+                A[0, 0] = Convert.ToDouble(lu_a11.Text);
+                A[0, 1] = Convert.ToDouble(lu_a12.Text);
+                A[0, 2] = Convert.ToDouble(lu_a13.Text);
+                B[0] = Convert.ToDouble(lu_b1.Text);
+
+                // --- سحب بيانات الصف الثاني ---
+                A[1, 0] = Convert.ToDouble(lu_a21.Text);
+                A[1, 1] = Convert.ToDouble(lu_a22.Text);
+                A[1, 2] = Convert.ToDouble(lu_a23.Text);
+                B[1] = Convert.ToDouble(lu_b2.Text);
+
+                // --- سحب بيانات الصف الثالث ---
+                A[2, 0] = Convert.ToDouble(lu_a31.Text);
+                A[2, 1] = Convert.ToDouble(lu_a32.Text);
+                A[2, 2] = Convert.ToDouble(lu_a33.Text);
+                B[2] = Convert.ToDouble(lu_b3.Text);
+
+                GetLUDecomposition(A, out double[,] L, out double[,] U);
+
+                // Forward Substitution (L * Y = B)
+                double[] Y = new double[3];
+                Y[0] = B[0];
+                Y[1] = B[1] - (L[1, 0] * Y[0]);
+                Y[2] = B[2] - (L[2, 0] * Y[0]) - (L[2, 1] * Y[1]);
+
+                // Backward Substitution (U * X = Y)
+                double X1, X2, X3;
+                X3 = Math.Round(Y[2] / U[2, 2], 5);
+                X2 = Math.Round((Y[1] - (U[1, 2] * X3)) / U[1, 1], 5);
+                X1 = Math.Round((Y[0] - (U[0, 1] * X2) - (U[0, 2] * X3)) / U[0, 0], 5);
+
+                MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
+            }
+            catch (Exception ex)
+            {
+                // ده هيمسك القسمة على صفر أو أي مشكلة من دالة الـ LU
+                MessageBox.Show($"Mathematical Error: {ex.Message}");
+                return;
+            }
+
+        }
         #endregion
 
         #region Crammer's Rule

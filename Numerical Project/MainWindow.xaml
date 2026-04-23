@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Numerical_Project"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="928">
+        Title="MainWindow" Height="450" Width="935">
 
 
     <Grid Margin="10">
@@ -152,7 +152,45 @@
             </TabItem>
 
             <!-- LU Decomposition -->
-            
+            <TabItem x:Name="tabLU" Header="LU Decomposition">
+                <Grid Margin="10" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="X3" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <Label Grid.Row="0" Grid.Column="3" Content="Constants" FontWeight="Bold" HorizontalAlignment="Center" Foreground="Blue"/>
+
+                    <TextBox x:Name="lu_a11" Grid.Row="1" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_a12" Grid.Row="1" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_a13" Grid.Row="1" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_b1" Grid.Row="1" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+
+                    <TextBox x:Name="lu_a21" Grid.Row="2" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_a22" Grid.Row="2" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_a23" Grid.Row="2" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_b2" Grid.Row="2" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+
+                    <TextBox x:Name="lu_a31" Grid.Row="3" Grid.Column="0" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_a32" Grid.Row="3" Grid.Column="1" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_a33" Grid.Row="3" Grid.Column="2" Width="50" Margin="5"/>
+                    <TextBox x:Name="lu_b3" Grid.Row="3" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
+                    <Button Grid.Row="4" Height="30" Grid.ColumnSpan="4" Content="Calculate LU Decomposition" FontSize="17" FontWeight="Bold" Click="LU_Click"/>
+                </Grid>
+            </TabItem>
+
             <!-- Crammer's Rule -->
             <TabItem x:Name="tabCramer" Header="Cramer's Rule">
                 <Grid Margin="10" HorizontalAlignment="Center">
