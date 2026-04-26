@@ -95,6 +95,39 @@ namespace Numerical_Project
             // 4. نحسب المحدد للمصفوفة الجديدة بعد التعديل ونرجعه
             return EvaluateDeterminant(tempA);
         }
+
+        // دالة إيجاد الصف اللي فيه أكبر رقم (بناءً على القيمة المطلقة)
+        private int GetMaxRowIndex(double[,] A, int currentStep)
+        {
+            int maxRow = currentStep;
+            double maxValue = Math.Abs(A[currentStep, currentStep]);
+
+            // بنبدأ تدوير من الصف اللي تحت الـ Pivot الحالي علطول
+            for (int i = currentStep + 1; i < 3; i++)
+            {
+                if (Math.Abs(A[i, currentStep]) > maxValue)
+                {
+                    maxValue = Math.Abs(A[i, currentStep]);
+                    maxRow = i;
+                }
+            }
+            return maxRow;
+        }
+
+        // دالة التبديل بين صفين
+        private void SwapRows(double[,] A, int row1, int row2)
+        {
+            // لو هو نفس الصف، مفيش داعي نضيع وقت في التبديل
+            if (row1 == row2) return;
+
+            for (int i = 0; i < 4; i++)
+            {
+                double temp = A[row1, i];
+                A[row1, i] = A[row2, i];
+                A[row2, i] = temp;
+            }
+        }
+
         #endregion
 
         #region Control the Tab appearance 
@@ -495,6 +528,16 @@ namespace Numerical_Project
                 return;
             }
 
+            // المتغير بتاعنا اللي بيشوف الـ Checkbox متعلم ولا لأ
+            bool usePivoting = chkPartialPivot.IsChecked == true;
+
+            // --- Step 1: Forward Elimination للعمود الأول (Pivot A[0,0]) ---
+            if (usePivoting)
+            {
+                int maxRow = GetMaxRowIndex(A, 0);
+                SwapRows(A, 0, maxRow);
+            }
+
             // Forward Elimination (Step 2)
             double m21 = A[1, 0] / A[0, 0];
             for(int i = 0; i < 4; i++)
@@ -506,6 +549,13 @@ namespace Numerical_Project
             for (int i = 0; i < 4; i++)
             {
                 A[2, i] -= m31 * A[0, i];
+            }
+
+            // --- Step 2: Forward Elimination للعمود التاني (Pivot A[1,1]) ---
+            if (usePivoting)
+            {
+                int maxRow = GetMaxRowIndex(A, 1);
+                SwapRows(A, 1, maxRow);
             }
 
             // --- حماية من القسمة على صفر للـ Pivot التاني ---

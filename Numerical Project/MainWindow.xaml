@@ -120,6 +120,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -147,7 +148,10 @@
                     <TextBox x:Name="ga32" Grid.Row="3" Grid.Column="1" Width="50" Margin="5"/>
                     <TextBox x:Name="ga33" Grid.Row="3" Grid.Column="2" Width="50" Margin="5"/>
                     <TextBox x:Name="gb3" Grid.Row="3" Grid.Column="3" Width="50" Margin="5" BorderBrush="Blue"/>
-                    <Button Grid.Row="4" Height="30" Grid.ColumnSpan="4" Content="Calculate Gauss Elimination" FontSize="17" FontWeight="Bold" Click="Gauss_Click"/>
+
+                    <CheckBox x:Name="chkPartialPivot" Grid.Row="4" Grid.ColumnSpan="4" Content="Use Partial Pivoting" Margin="5,10,5,5" HorizontalAlignment="Center" FontWeight="Bold"/>
+
+                    <Button Grid.Row="5" Height="30" Grid.ColumnSpan="4" Content="Calculate Gauss Elimination" FontSize="17" FontWeight="Bold" Click="Gauss_Click"/> 
                 </Grid>
             </TabItem>
 
