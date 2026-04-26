@@ -134,10 +134,10 @@ namespace Numerical_Project
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // السطر ده عشان نتأكد إن الواجهة حملت كلها ومفيش حاجة بـ null وتعمل Crash
-            if (dgResults == null || tabCramer == null || tabGauss == null || tabLU == null) return;
+            if (dgResults == null || tabCramer == null || tabGauss == null || tabLU == null || tabGaussJordan == null) return;
 
             // بنسأل: هل التاب بتاعة Cramer هي اللي مفتوحة دلوقتي؟
-            if (tabCramer.IsSelected || tabGauss.IsSelected || tabLU.IsSelected)
+            if (tabCramer.IsSelected || tabGauss.IsSelected || tabLU.IsSelected || tabGaussJordan.IsSelected)
             {
                 // لو اه، اخفي الـ DataGrid تماماً (Collapsed بتخفيها وتلغي المساحة الفاضية بتاعتها)
                 dgResults.Visibility = Visibility.Collapsed;
@@ -732,6 +732,85 @@ namespace Numerical_Project
         }
         #endregion
 
+        #region Gauss Jordan
+        private void GaussJordan_Click(object sender, RoutedEventArgs e)
+        {
+            // 1. اخد ال Augmented Matrix بال Try Catch
+            double[,] A = new double[3, 4];
+
+            // بنستخدم Try و Catch عشان لو اليوزر دخل حروف بدل أرقام نطلعله رسالة بدل ما البرنامج يكراش
+            try
+            {
+                // --- سحب بيانات الصف الأول ---
+                A[0, 0] = Convert.ToDouble(gja11.Text);
+                A[0, 1] = Convert.ToDouble(gja12.Text);
+                A[0, 2] = Convert.ToDouble(gja13.Text);
+                A[0, 3] = Convert.ToDouble(gjb1.Text);
+
+                // --- سحب بيانات الصف الثاني ---
+                A[1, 0] = Convert.ToDouble(gja21.Text);
+                A[1, 1] = Convert.ToDouble(gja22.Text);
+                A[1, 2] = Convert.ToDouble(gja23.Text);
+                A[1, 3] = Convert.ToDouble(gjb2.Text);
+
+                // --- سحب بيانات الصف الثالث ---
+                A[2, 0] = Convert.ToDouble(gja31.Text);
+                A[2, 1] = Convert.ToDouble(gja32.Text);
+                A[2, 2] = Convert.ToDouble(gja33.Text);
+                A[2, 3] = Convert.ToDouble(gjb3.Text);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
+            }
+            // المتغير بتاعنا اللي بيشوف الـ Checkbox متعلم ولا لأ
+            bool usePivoting = chkPartialPivotJordan.IsChecked == true;
+
+            for (int k = 0; k < 3; k++)
+            {
+                if (usePivoting)
+                {
+                    int maxRow = GetMaxRowIndex(A, k);
+                    SwapRows(A, k, maxRow);
+                }
+                // حماية من القسمة على صفر
+                if (A[k, k] == 0)
+                {
+                    MessageBox.Show($"Pivot at row {k + 1} is zero. Cannot proceed.");
+                    return;
+                }
+
+                // 2. Normalization: زي ما قولت بالظبط، نحفظ الرقم في Temp ونقسم الصف كله عليه
+                double pivot = A[k, k];
+                for (int j = 0; j < 4; j++)
+                {
+                    A[k, j] /= pivot;
+                }
+
+                // 3. Elimination: تصفير اللي فوق واللي تحت
+                for (int i = 0; i < 3; i++) // بنلف على كل الصفوف
+                {
+                    if (i != k) // لو أنا مش في نفس صف الـ Pivot اللي أنا لسه مخليه 1
+                    {
+                        double factor = A[i, k];
+
+                        // نضربه في صف الـ Pivot ونطرحه من الصف الحالي
+                        for (int j = 0; j < 4; j++)
+                        {
+                            A[i, j] -= factor * A[k, j];
+                        }
+                    }
+                }
+            }
+
+            double X1 = Math.Round(A[0, 3], 5);
+            double X2 = Math.Round(A[1, 3], 5);
+            double X3 = Math.Round(A[2, 3], 5);
+
+            MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+        }
+        #endregion
     }
 
     // For Bisection and False Position (they use the same variables!)
