@@ -128,6 +128,24 @@ namespace Numerical_Project
             }
         }
 
+        // 1. دالة إظهار الرسالة (عملنا باراميتر يقولنا هي رسالة عادية ولا إيرور عشان نغير اللون)
+        private void ShowMessage(string message, bool isError = false)
+        {
+            txtOverlayMessage.Text = message;
+
+            // لو إيرور نخلي الخط اللي فوق والزرار أحمر، لو رسالة عادية نخليهم أزرق
+            var brushColor = isError ? "#EF4444" : "#3B82F6";
+            OverlayHeaderColor.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(brushColor));
+
+            // إظهار الطبقة
+            OverlayGrid.Visibility = Visibility.Visible;
+        }
+
+        // 2. دالة إخفاء الرسالة لما ندوس OK أو ندوس برا
+        private void CloseOverlay_Click(object sender, RoutedEventArgs e)
+        {
+            OverlayGrid.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region Control the Tab appearance 
@@ -160,6 +178,35 @@ namespace Numerical_Project
                 GridRow.Height = new GridLength(1, GridUnitType.Star);
             }
         }
+
+        private void dgResults_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            // بنستخدم Switch عشان نغير كل اسم كلاس للاسم اللي يعجبنا في الواجهة
+            switch (e.Column.Header.ToString())
+            {
+                // أسماء Bisection و False Position
+                case "Xl": e.Column.Header = "Xl"; break;
+                case "F_Xl": e.Column.Header = "f(Xl)"; break;
+                case "Xu": e.Column.Header = "Xu"; break;
+                case "F_Xu": e.Column.Header = "f(Xu)"; break;
+                case "Xr": e.Column.Header = "Xr"; break;
+                case "F_Xr": e.Column.Header = "f(Xr)"; break;
+
+                // أسماء Fixed Point و Newton
+                case "Xi": e.Column.Header = "Xi"; break;
+                case "Xi_1": e.Column.Header = "Xi+1"; break; // Fixed Point
+                case "Xi_plus_1": e.Column.Header = "Xi+1"; break; // Newton
+                case "F_Xi": e.Column.Header = "f(Xi)"; break;
+                case "F_Prime_Xi": e.Column.Header = "f'(Xi)"; break;
+
+                // أسماء Secant
+                case "Xi_minus_1": e.Column.Header = "Xi-1"; break;
+                case "F_Xi_minus_1": e.Column.Header = "f(Xi-1)"; break;
+
+                // مشترك
+                case "ErrorPercent": e.Column.Header = "Error (%)"; break;
+            }
+        }
         #endregion
 
         #region Bisection Method
@@ -173,7 +220,7 @@ namespace Numerical_Project
                 !double.TryParse(txtBisectXu.Text, out double xu) ||
                 !double.TryParse(txtBisectEa.Text, out double targetEa))
             {
-                MessageBox.Show("Please enter valid numbers."); return;
+                ShowMessage("Please enter valid numbers.", true); return;
             }
 
             double f_xl = EvaluateMath(eq, xl);
@@ -181,7 +228,7 @@ namespace Numerical_Project
 
             if (f_xl * f_xu > 0)
             {
-                MessageBox.Show("No root bracketed. f(Xl) and f(Xu) must have opposite signs."); return;
+                ShowMessage("No root bracketed. f(Xl) and f(Xu) must have opposite signs.", true); return;
             }
 
             double error = 100, xr = 0, xr_old = 0;
@@ -212,7 +259,7 @@ namespace Numerical_Project
 
                 if (error <= targetEa || f_xr == 0)
                 {
-                    MessageBox.Show($"Root found: {Math.Round(xr, 5)} at iteration {counter}");
+                    ShowMessage($"Root found: {Math.Round(xr, 5)} at iteration {counter}");
                     break;
                 }
 
@@ -243,7 +290,7 @@ namespace Numerical_Project
                 !double.TryParse(txtFPXu.Text, out double xu) ||
                 !double.TryParse(txtFPEa.Text, out double targetEa))
             {
-                MessageBox.Show("Please enter valid numbers."); return;
+                ShowMessage("Please enter valid numbers.", true); return;
             }
 
             double f_xl = EvaluateMath(eq, xl);
@@ -251,7 +298,7 @@ namespace Numerical_Project
 
             if (f_xl * f_xu > 0)
             {
-                MessageBox.Show("No root bracketed. f(Xl) and f(Xu) must have opposite signs."); return;
+                ShowMessage("No root bracketed. f(Xl) and f(Xu) must have opposite signs.", true); return;
             }
 
             double error = 100, xr = 0, xr_old = 0;
@@ -283,7 +330,7 @@ namespace Numerical_Project
 
                 if (error <= targetEa || f_xr == 0)
                 {
-                    MessageBox.Show($"Root found: {Math.Round(xr, 5)} at iteration {counter}");
+                    ShowMessage($"Root found: {Math.Round(xr, 5)} at iteration {counter}");
                     break;
                 }
 
@@ -316,7 +363,7 @@ namespace Numerical_Project
             if (!double.TryParse(txtFixedX0.Text, out double xi) ||
                 !double.TryParse(txtFixedEa.Text, out double targetEa))
             {
-                MessageBox.Show("Please enter valid numbers for X0 and Ea.");
+                ShowMessage("Please enter valid numbers for X0 and Ea.", true);
                 return;
             }
 
@@ -355,7 +402,7 @@ namespace Numerical_Project
                 // 5. Check stop condition
                 if (error <= targetEa)
                 {
-                    MessageBox.Show($"Root found: {xi_1} at iteration {counter}");
+                    ShowMessage($"Root found: {xi_1} at iteration {counter}");
                     break;
                 }
 
@@ -366,7 +413,7 @@ namespace Numerical_Project
                 // Failsafe
                 if (counter > 100)
                 {
-                    MessageBox.Show("Divergence detected. Reached 100 iterations without finding a root.");
+                    ShowMessage("Divergence detected. Reached 100 iterations without finding a root.", true);
                     break;
                 }
             }
@@ -384,7 +431,7 @@ namespace Numerical_Project
             if (!double.TryParse(txtNewtonX0.Text, out double xi) ||
                 !double.TryParse(txtNewtonEa.Text, out double targetEa))
             {
-                MessageBox.Show("Please enter valid numbers."); return;
+                ShowMessage("Please enter valid numbers.", true); return;
             }
 
             double error = 100, xi_1 = 0;
@@ -399,7 +446,7 @@ namespace Numerical_Project
 
                 if (f_prime_xi == 0)
                 {
-                    MessageBox.Show("Derivative is zero. Division by zero error."); return;
+                    ShowMessage("Derivative is zero. Division by zero error.", true); return;
                 }
 
                 // Newton-Raphson Formula
@@ -420,7 +467,7 @@ namespace Numerical_Project
 
                 if (error <= targetEa)
                 {
-                    MessageBox.Show($"Root found: {Math.Round(xi_1, 5)} at iteration {counter}");
+                    ShowMessage($"Root found: {Math.Round(xi_1, 5)} at iteration {counter}");
                     break;
                 }
                 xi = xi_1;
@@ -440,7 +487,7 @@ namespace Numerical_Project
                 !double.TryParse(txtSecantX0.Text, out double xi) ||
                 !double.TryParse(txtSecantEa.Text, out double targetEa))
             {
-                MessageBox.Show("Please enter valid numbers."); return;
+                ShowMessage("Please enter valid numbers.", true); return;
             }
 
             double error = 100, xi_plus_1 = 0;
@@ -455,7 +502,7 @@ namespace Numerical_Project
 
                 if (f_xi_minus_1 - f_xi == 0)
                 {
-                    MessageBox.Show("Division by zero error in Secant calculation."); return;
+                    ShowMessage("Division by zero error in Secant calculation.", true); return;
                 }
 
                 // Secant Formula
@@ -517,14 +564,14 @@ namespace Numerical_Project
             }
             catch (FormatException)
             {
-                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                ShowMessage("Please make sure all boxes are filled with valid numbers!", true);
                 return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
             }
 
             // --- حماية من القسمة على صفر للـ Pivot الأول ---
             if (A[0, 0] == 0)
             {
-                MessageBox.Show("A[0,0] is zero! Cannot proceed without Partial Pivoting. Please rearrange your equations.");
+                ShowMessage("A[0,0] is zero! Cannot proceed without Partial Pivoting. Please rearrange your equations.", true);
                 return;
             }
 
@@ -561,7 +608,7 @@ namespace Numerical_Project
             // --- حماية من القسمة على صفر للـ Pivot التاني ---
             if (A[1, 1] == 0)
             {
-                MessageBox.Show("A[1,1] became zero! Cannot proceed.");
+                ShowMessage("A[1,1] became zero! Cannot proceed.", true);
                 return;
             }
 
@@ -578,7 +625,7 @@ namespace Numerical_Project
 
             double X1 = Math.Round((A[0, 3] - A[0, 2] * X3 - A[0, 1] * X2) / A[0, 0], 5);
 
-            MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+            ShowMessage($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
         }
         #endregion
 
@@ -654,18 +701,18 @@ namespace Numerical_Project
                 X2 = Math.Round((Y[1] - (U[1, 2] * X3)) / U[1, 1], 5);
                 X1 = Math.Round((Y[0] - (U[0, 1] * X2) - (U[0, 2] * X3)) / U[0, 0], 5);
 
-                MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+                ShowMessage($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
 
             }
             catch (FormatException)
             {
-                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                ShowMessage("Please make sure all boxes are filled with valid numbers!", true);
                 return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
             }
             catch (Exception ex)
             {
                 // ده هيمسك القسمة على صفر أو أي مشكلة من دالة الـ LU
-                MessageBox.Show($"Mathematical Error: {ex.Message}");
+                ShowMessage($"Mathematical Error: {ex.Message}", true);
                 return;
             }
 
@@ -704,7 +751,7 @@ namespace Numerical_Project
             }
             catch (FormatException)
             {
-                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                ShowMessage("Please make sure all boxes are filled with valid numbers!", true);
                 return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
             }
 
@@ -712,7 +759,7 @@ namespace Numerical_Project
 
             if (D == 0)
             {
-                MessageBox.Show("The main determinant (D) is 0. This system has no unique solution.");
+                ShowMessage("The main determinant (D) is 0. This system has no unique solution.", true);
                 return; // بنوقف الكود عشان مانعملش قسمة على صفر
             }
 
@@ -728,7 +775,7 @@ namespace Numerical_Project
             double X3 = Math.Round(D3 / D, 5);
 
             // ممكن هنا تعرضهم في MessageBox أو Label في الواجهة زي ما تحب
-            MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+            ShowMessage($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
         }
         #endregion
 
@@ -761,7 +808,7 @@ namespace Numerical_Project
             }
             catch (FormatException)
             {
-                MessageBox.Show("Please make sure all boxes are filled with valid numbers!");
+                ShowMessage("Please make sure all boxes are filled with valid numbers!", true);
                 return; // بنوقف الكود هنا عشان ميكملش حسابات بأرقام بايظة
             }
             // المتغير بتاعنا اللي بيشوف الـ Checkbox متعلم ولا لأ
@@ -777,7 +824,7 @@ namespace Numerical_Project
                 // حماية من القسمة على صفر
                 if (A[k, k] == 0)
                 {
-                    MessageBox.Show($"Pivot at row {k + 1} is zero. Cannot proceed.");
+                    ShowMessage($"Pivot at row {k + 1} is zero. Cannot proceed.", true);
                     return;
                 }
 
@@ -808,7 +855,7 @@ namespace Numerical_Project
             double X2 = Math.Round(A[1, 3], 5);
             double X3 = Math.Round(A[2, 3], 5);
 
-            MessageBox.Show($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
+            ShowMessage($"X1 = {X1}\nX2 = {X2}\nX3 = {X3}");
         }
         #endregion
     }

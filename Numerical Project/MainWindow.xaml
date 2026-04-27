@@ -5,8 +5,202 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Numerical_Project"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1030">
+        Title="MainWindow" Height="600" Width="1270">
 
+    <Window.Resources>
+        <!-- Tabs Styling -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0,10,0,0"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid x:Name="RootGrid" Margin="0,0,5,0">
+                            <Border x:Name="Border" 
+                            Background="#F8FAFC" 
+                            BorderBrush="#E2E8F0" 
+                            BorderThickness="1,1,1,0" 
+                            CornerRadius="8,8,0,0" 
+                            Padding="15,8">
+                                <ContentPresenter x:Name="ContentSite"
+                                        ContentSource="Header"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#64748B"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                            </Border>
+                            <Border x:Name="Underline" 
+                            Height="3" 
+                            Background="Transparent" 
+                            VerticalAlignment="Bottom"
+                            Margin="2,0,2,0"/>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F1F5F9"/>
+                                <Setter TargetName="Border" Property="Cursor" Value="Hand"/>
+                            </Trigger>
+
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="White"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#CBD5E1"/>
+                                <Setter TargetName="Underline" Property="Background" Value="#3B82F6"/>
+                                <Setter Property="Panel.ZIndex" Value="100"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- DataGrid Styling-->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="10,0,10,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="RowHeight" Value="35"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+        </Style>
+
+        <!-- TextBoxes Style -->
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#3B82F6"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    
+        <!-- Buttons Style -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="0,15,0,0"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                        Background="{TemplateBinding Background}" 
+                        CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Label Style -->
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+        </Style>
+    
+        <!-- CheckBox Style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,0,0,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal">
+                            <Grid Width="20" Height="20">
+                                <Border x:Name="Box" Background="#F1F5F9" BorderBrush="#CBD5E1" 
+                                BorderThickness="1" CornerRadius="5"/>
+                                <Path x:Name="Check" Data="M 2,5 L 5,8 L 10,2" Stroke="#3B82F6" 
+                              StrokeThickness="2" Visibility="Collapsed" 
+                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Check" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#3B82F6"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Box" Property="Background" Value="#E2E8F0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -20,7 +214,22 @@
             <RowDefinition x:Name="GridRow" Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Numerical Analysis Solver" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,10,0,25">
+            <TextBlock Text="Numerical Analysis Solver" 
+                       FontSize="34" 
+                       FontWeight="ExtraBold" 
+                       Foreground="#1E293B">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black" Opacity="0.08" BlurRadius="5" ShadowDepth="2"/>
+                </TextBlock.Effect>
+            </TextBlock>
+
+            <Border Width="80" Height="5" 
+                    Background="#3B82F6" 
+                    CornerRadius="2.5" 
+                    HorizontalAlignment="Center" 
+                    Margin="0,8,0,0"/>
+        </StackPanel>
 
 
         <TabControl Grid.Row="1" Margin="0,0,0,15" x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged" HorizontalAlignment="Stretch">
@@ -41,7 +250,7 @@
                     <Button Content="Calculate Bisection" Padding="10,5" Click="Bisection_Click"/>
                 </StackPanel>
             </TabItem>
-            
+
             <!-- False Position Method -->
             <TabItem Header="False Position Method">
                 <StackPanel Orientation="Horizontal" Margin="10">
@@ -68,7 +277,7 @@
 
                     <Label Content="g(X)"/>
                     <TextBox x:Name="txtG_x" Width="180" Margin="5,0,15,0"/>
-                    
+
                     <Label Content="X0:"/>
                     <TextBox x:Name="txtFixedX0" Width="60" Margin="5,0,15,0"/>
 
@@ -78,7 +287,7 @@
                     <Button Content="Calculate Fixed-Point" Click="FixedPoint_Click" Padding="10,5"/>
                 </StackPanel>
             </TabItem>
-            
+
             <!-- Newton Raphson Method -->
             <TabItem Header="Newton Raphson Method">
                 <StackPanel Orientation="Horizontal" Margin="10">
@@ -129,6 +338,22 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
+                    <!-- Border Style for Matrix -->
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" BorderBrush="#94A3B8" BorderThickness="2,0,0,0" Margin="-15,0,5,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" 
+            BorderBrush="#94A3B8" BorderThickness="0,0,2,0" Margin="5,0,-8,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+
                     <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <Label Grid.Row="0" Grid.Column="2" Content="X3" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -151,7 +376,7 @@
 
                     <CheckBox x:Name="chkPartialPivot" Grid.Row="4" Grid.ColumnSpan="4" Content="Use Partial Pivoting" Margin="5,10,5,5" HorizontalAlignment="Center" FontWeight="Bold"/>
 
-                    <Button Grid.Row="5" Height="30" Grid.ColumnSpan="4" Content="Calculate Gauss Elimination" FontSize="17" FontWeight="Bold" Click="Gauss_Click"/> 
+                    <Button Grid.Row="5" Height="30" Grid.ColumnSpan="4" Content="Calculate Gauss Elimination" FontSize="17" FontWeight="Bold" Click="Gauss_Click"/>
                 </Grid>
             </TabItem>
 
@@ -171,6 +396,22 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+
+                    <!-- Border Style for Matrix -->
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" 
+BorderBrush="#94A3B8" BorderThickness="2,0,0,0" Margin="-15,0,5,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" BorderBrush="#94A3B8" BorderThickness="0,0,2,0" Margin="5,0,-8,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
 
                     <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -211,6 +452,23 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+
+                    <!-- Border Style for Matrix -->
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" 
+BorderBrush="#94A3B8" BorderThickness="2,0,0,0" Margin="-15,0,5,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" 
+BorderBrush="#94A3B8" BorderThickness="0,0,2,0" Margin="5,0,-8,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
 
                     <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -253,6 +511,23 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
+                    <!-- Border Style for Matrix -->
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="0" 
+BorderBrush="#94A3B8" BorderThickness="2,0,0,0" Margin="-15,0,5,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" 
+BorderBrush="#94A3B8" BorderThickness="0,0,2,0" Margin="5,0,-8,0">
+                        <Grid>
+                            <Border VerticalAlignment="Top" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                            <Border VerticalAlignment="Bottom" Height="2" Background="#94A3B8" Width="10" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+
                     <Label Grid.Row="0" Grid.Column="0" Content="X1" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <Label Grid.Row="0" Grid.Column="1" Content="X2" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <Label Grid.Row="0" Grid.Column="2" Content="X3" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -279,33 +554,39 @@
                 </Grid>
             </TabItem>
         </TabControl>
-    
-        <DataGrid Grid.Row="2" x:Name="dgResults" Background="White" AutoGenerateColumns="True" ColumnWidth="*"/>
+
+        <DataGrid Grid.Row="2" x:Name="dgResults" Background="White" AutoGenerateColumns="True" ColumnWidth="*" AutoGeneratingColumn="dgResults_AutoGeneratingColumn"/>
+        
+        <!-- Display Result Message -->
+        <Grid x:Name="OverlayGrid" Grid.RowSpan="3" Visibility="Collapsed" Panel.ZIndex="1000">
+            <Border Background="#80000000" MouseDown="CloseOverlay_Click"/>
+
+            <Border HorizontalAlignment="Center" VerticalAlignment="Center" 
+                    Background="White" CornerRadius="12" Padding="20"
+                    MinWidth="300" MaxWidth="450">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="15" ShadowDepth="3"/>
+                </Border.Effect>
+
+                <StackPanel>
+                    <Border x:Name="OverlayHeaderColor" Height="6" CornerRadius="3" Background="#3B82F6" Margin="-20,-20,-20,15"/>
+
+                    <TextBlock x:Name="txtOverlayMessage" Text="Message here" 
+                               FontSize="16" Foreground="#334155" TextWrapping="Wrap" 
+                               TextAlignment="Center" Margin="0,0,0,20"/>
+
+                    <Button Content="OK" Width="100" Height="35" 
+                            Background="#3B82F6" Foreground="White" 
+                            FontWeight="Bold" BorderThickness="0" Cursor="Hand"
+                            Click="CloseOverlay_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
-
-    <!--
-    <Grid>
-    <Grid.RowDefinitions>
-        <RowDefinition></RowDefinition>
-        <RowDefinition></RowDefinition>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition></ColumnDefinition>
-        <ColumnDefinition></ColumnDefinition>
-    </Grid.ColumnDefinitions>
-    <Label Content="Enter F(X) :" FontSize="22" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-    <TextBox Grid.Column="1" TextAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Left"  Width="200" Height="50" Text=""/>
-
-    <Label Content="Root Method :" FontSize="22" FontWeight="Bold" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-    <Menu Grid.Row="1" Grid.Column="1" Width="200" Height="50" VerticalAlignment="Top" HorizontalAlignment="left">
-        <MenuItem Header="Select a Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click">
-            <MenuItem Header="Bisection Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
-            <MenuItem Header="False Position Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
-            <MenuItem Header="Simple Fixed Point Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
-            <MenuItem Header="Newton Raphson Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
-            <MenuItem Header="Secant Method" Height="51" Width="197" FontWeight="Bold" Click="MenuItem_Click"/>
-        </MenuItem>
-    </Menu>
-</Grid>
-    -->
 </Window>
